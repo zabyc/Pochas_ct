@@ -520,24 +520,3 @@ def filter_txt_file(path,args):
             text_t += letter
     with open(path,'w') as f:
         f.write(text_t)
-
-
-if __name__ == '__main__':
-    path = '/home/leno/Programas/Python/Encryption_Decription/target.txt'
-    chars_eliminate = punctuation+digits+'’'+'‘'
-    unwanted_stuff = list(chars_eliminate)
-    filter_txt_file(path,unwanted_stuff)
-    encrypt = Encrypt(
-        target_file_path=path,
-        consider_spaces=False,
-        exit_file_path='encrypted_target.txt',
-        use_larger_char_list=True
-        )
-    print(encrypt.c_p_key)
-    decrypt = Decrypt(
-        target_file_path=encrypt.exit_file_path,
-        key=encrypt.c_p_key,
-        consider_spaces=False,
-        accuracy_mode_test=True,
-        use_larger_char_list=True,
-    )
