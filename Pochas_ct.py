@@ -69,7 +69,8 @@ class Decrypt:
         raw_data = str(f.read())
         words = json.loads(raw_data)
     
-    frequency_letters_considering_spaces_v1 = {
+
+    frequency_letters_considering_spaces_v1 = { 
         'a': 0.07,
         'b': 0.013,
         'c': 0.028,
@@ -327,7 +328,7 @@ class Decrypt:
                 print(e.args[0])
                 _exit()
             else:
-                self.tries = tries
+                self.tries = tries 
                 self.true_key = key
                 self.accuracy_char, self.accuracy_key = self.__accuracy_mode()
 
@@ -340,7 +341,10 @@ class Decrypt:
 
     def __generate_frequency_of_c(self):
         try:
-            fr_l = self.frequency_letters_considering_spaces_v2.keys() if self.use_larger_char_list else self.frequency_letters_considering_spaces_v1.keys()
+            if self.consider_spaces:
+                fr_l = self.frequency_letters_considering_spaces_v2.keys() if self.use_larger_char_list else self.frequency_letters_considering_spaces_v1.keys()
+            else:
+                fr_l = self.frequency_letters_not_considering_spaces_v2.keys() if self.use_larger_char_list else self.frequency_letters_not_considering_spaces_v1.keys()
             chars = list(set(self.cipher_text))
             if len(chars) < len(fr_l):
                 chars = set(fr_l)
@@ -360,9 +364,9 @@ class Decrypt:
         try:
             while True:
                 if self.consider_spaces:
-                    letter_dic = Decrypt.frequency_letters_considering_spaces_v1.copy()
+                    letter_dic = Decrypt.frequency_letters_considering_spaces_v1.copy() if not self.use_larger_char_list else Decrypt.frequency_letters_considering_spaces_v2.copy()
                 else:
-                    letter_dic = Decrypt.frequency_letters_not_considering_spaces_v1.copy()
+                    letter_dic = Decrypt.frequency_letters_not_considering_spaces_v1.copy() if not self.use_larger_char_list else Decrypt.frequency_letters_not_considering_spaces_v2.copy()
                 c_frequency = self.fr_cipher_text.copy()
                 key = dict()
                 for index,val in c_frequency.items():
@@ -376,7 +380,6 @@ class Decrypt:
                         if len(lista) < 4:
                             num1 -= 0.1
                             num2 += 0.1
-                            assert 'increase'
                         else:
                             break    
                     choice = random.choice(lista)
@@ -482,7 +485,7 @@ class Decrypt:
                         if word in Decrypt.words:
                             ocurrences += 1
                         total += 1
-                    days2, hours2, mins2, secs2 = localtime().tm_mday, localtime().tm_hour, localtime().tm_min, localtime().tm_sec
+                    days2, hours2, mins2, secs2 = localtime().tm_mday, localtime().tm_hour, localtime().tm_min, localtime().tm_sec # I use this to set record of how much time was used, uses the time at the start of the program so it may not represent the actual time used
                     total_secs2 = days2*24*3600 + hours2*3600 + mins2*60 + secs2
                     difference = total_secs2 - total_secs1
                     daysd = difference//(3600*24)
@@ -520,3 +523,7 @@ def filter_txt_file(path,args):
             text_t += letter
     with open(path,'w') as f:
         f.write(text_t)
+
+
+if __name__ == '__main__':
+    pass
