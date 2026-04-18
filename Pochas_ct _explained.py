@@ -10,14 +10,21 @@ def _exit() -> None: # The only purpose is to save time in writing
 
 class Encrypt:
 
-    def __init__(self,target_file_path,consider_spaces=True,exit_file_path='encrypted_file.txt',use_larger_char_list=False):
+    def __init__(self,target_file_path,consider_spaces=True,key=None,exit_file_path='encrypted_file.txt',use_larger_char_list=False):
+        '''If you use a key it must be from plain to cipher'''
         self.target = target_file_path
         self.consider_spaces = consider_spaces # For comodity
         self.exit_file_path = exit_file_path
         self.use_larger_char_list = use_larger_char_list # Changes the amount of characters with which the text will be encoded
         with open(target_file_path,'r') as f: # This will serve as the plain text
             self.plain_text = f.read() # The plain text
-        self.p_c_key = self.__new_key() # This is mainly for utilities it means plain to cipher
+        if isinstance(key,dict) and len(key.values()) >= 26: # To check if the key is valid
+            self.p_c_key = key
+        elif key == None:
+            self.p_c_key = self.__new_key() # This is mainly for utilities it means plain to cipher
+        else:
+            print('Key must be either None or a dict with more than 26 values')
+            _exit()
         self.c_p_key = {c:p for p,c in self.p_c_key.items()} # Means cipher to plain,  it can serve for the accuracy mode in the decrypt function
         self.cipher_text = self.__encrypt() # The cipher text
 
@@ -529,21 +536,4 @@ def filter_txt_file(path,args): # This is a utility to filter unwanted character
 
 
 if __name__ == '__main__':
-    path = '/home/leno/Programas/Python/Encryption_Decription/target.txt'
-    chars_eliminate = punctuation+digits+'’'+'‘'
-    unwanted_stuff = list(chars_eliminate)
-    filter_txt_file(path,unwanted_stuff)
-    encrypt = Encrypt(
-        target_file_path=path,
-        consider_spaces=False,
-        exit_file_path='encrypted_target.txt',
-        use_larger_char_list=False
-        )
-    print(encrypt.c_p_key)
-    decrypt = Decrypt(
-        target_file_path=encrypt.exit_file_path,
-        key=encrypt.c_p_key,
-        consider_spaces=False,
-        accuracy_mode_test=True,
-        use_larger_char_list=False
-    )
+    pass
