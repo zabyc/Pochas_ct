@@ -10,14 +10,21 @@ def _exit() -> None:
 
 class Encrypt:
 
-    def __init__(self,target_file_path,consider_spaces=True,exit_file_path='encrypted_file.txt',use_larger_char_list=False):
+    def __init__(self,target_file_path,consider_spaces=True,key=None,exit_file_path='encrypted_file.txt',use_larger_char_list=False):
+        '''If you use a key it must be from plain to cipher'''
         self.target = target_file_path
         self.consider_spaces = consider_spaces
         self.exit_file_path = exit_file_path
         self.use_larger_char_list = use_larger_char_list
         with open(target_file_path,'r') as f:
             self.plain_text = f.read()
-        self.p_c_key = self.__new_key()
+        if isinstance(key,dict) and len(key.values()) >= 26:
+            self.p_c_key = key
+        elif key == None:
+            self.p_c_key = self.__new_key()
+        else:
+            print('Key must be either None or a dict with more than 26 values')
+            _exit()
         self.c_p_key = {c:p for p,c in self.p_c_key.items()}
         self.cipher_text = self.__encrypt()
 
@@ -318,7 +325,8 @@ class Decrypt:
                 result = self.decrypt()
             else:
                 result = self.decrypt(key=key)
-            self.key = result[0]
+            self.c_p_key = result[0]
+            self.p_c_key = {a:b for b,a in self.c_p_key}
             self.plain_text = result[1]
         else:
             try:
